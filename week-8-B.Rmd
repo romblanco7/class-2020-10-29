@@ -32,15 +32,41 @@ Today, we will be considering `att_chg` as a function of `treatment`.
 
 * Create the mathematical formula for that model here.
 
+
+$$ attitude_i = \beta_1 x_{control,i} + \beta_2 x_{treatment,i} + \epsilon_i$$
+
 * Describe the ideal Preceptor Table.
 
+# An ideal preceptor table allows you to measure the potential outcome for individuals who are under the treatmeant and under the control conditions and compare the results (?)
+
 * Write a few sentences about whether or not our data will allow us to answer this question.
+*What would Preceptor's change in attitude toward immigration be if he were to receive the treatment next week?*
 
-
+# It will depend on the variables that could impact preceptor's attitude, many of which are beyond our control over a week's experiment. We need to know what those variables are and how much they impact the change in attitude. 
 
 ## Scene 2
 
 **Prompt:** There are two ways to interpret our question. The first involves our expectation. We can also think of this as the long-term average, if we did the same experiment over and over again. (Assume that Preceptor is always assigned to the treatment.) What is your posterior probability distribution for Preceptor's *expected* `att_chg`?
+
+```{r}
+s2 <- stan_glm(att_chg ~ treatment -1, 
+               data = week_8,
+               family = gaussian,
+               refresh = 0)
+
+s2 %>%
+  as_tibble() %>%
+  ggplot(aes(x = treatmentTreated)) +
+  geom_histogram(aes(y = after_stat(count/sum(count))),
+                 bins = 100,
+                 binwidth = 0.05) +
+  labs(title = "Posterior Probabilty Distribution",
+       subtitle = "Preceptor's expectec attitude change",
+       x = "Treatment",
+       y = "Probability") +
+  theme_bw()
+
+```
 
 
 
